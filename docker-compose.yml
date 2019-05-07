@@ -1,0 +1,22 @@
+version: '3.7'
+services:
+  varnish:
+    build:
+      context: ./varnish
+      args:
+        config: "${VARNISH_CONFIG}"
+    ports:
+      - "6002:80"
+  envoy:
+    build:
+      context: ./envoy
+      args:
+        config: "${ENVOY_CONFIG}"
+    ports:
+      - "6003:6003"
+  traffic-recorder:
+    build:
+      context: ./traffic-recorder
+    network_mode: service:envoy
+    volumes:
+      - "./traffic-recorder/output:/output"
